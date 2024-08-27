@@ -7,7 +7,7 @@ import { db } from "./services/database";
 dotenv.config();
 
 const database = new db();
-database.initialize();
+/*database.initialize();*/
 
 const app = express();
 const port = 81;
