@@ -1,0 +1,22 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "postgresql"
+  url          = "localhost:5432"
+}
+
+model tb_users {
+  customer_code String @id @default(uuid())
+  measures tb_measures[]
+}
+
+model tb_measures {
+  measure_uuid String @id @default(uuid())
+  image String
+  measure_datetime DateTime 
+  measure_type String
+  confirmed Boolean
+  users tb_users[]
+}
