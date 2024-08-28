@@ -4,19 +4,16 @@ generator client {
 
 datasource db {
   provider     = "postgresql"
-  url          = "localhost:5432"
+  url          = "postgresql://admin:admin@localhost:5432/challenge_shopper"
 }
 
-model tb_users {
-  customer_code String @id @default(uuid())
-  measures tb_measures[]
-}
-
-model tb_measures {
-  measure_uuid String @id @default(uuid())
-  image String
-  measure_datetime DateTime 
-  measure_type String
-  confirmed Boolean
-  users tb_users[]
+model Measurement {
+  id              Int      @id @default(autoincrement())
+  measure_uuid    String   @unique
+  measure_value   Int
+  measure_datetime DateTime
+  measure_type    String
+  image_url       String
+  confirmed       Int
+  customer_code   String
 }

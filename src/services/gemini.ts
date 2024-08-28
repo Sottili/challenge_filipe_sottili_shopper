@@ -1,10 +1,8 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleAIFileManager } from "@google/generative-ai/server";
 
-export class gemini {
+export class GeminiService {
   private gen_key: string = process.env.GEMINI_API_KEY!;
-  private genAI = new GoogleGenerativeAI(this.gen_key);
+  public genFileManager = new GoogleAIFileManager(this.gen_key);
 
-  public model(): void {
-    this.genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-  }
+  public upload = this.genFileManager.uploadFile;
 }

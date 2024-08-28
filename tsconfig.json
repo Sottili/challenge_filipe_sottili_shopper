@@ -7,6 +7,7 @@
     "forceConsistentCasingInFileNames": true /* Ensure that casing is correct in imports. */,
     "lib": ["es6"],
     "allowJs": true,
+    "composite": true,
     "outDir": "build",
     "rootDir": "src",
     "strict": true /* Enable all strict type-checking options. */,
