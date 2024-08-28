@@ -5,6 +5,7 @@ import { MeasurementService } from "../services/MeasurementService";
 import { LLMService } from "../services/LLMService";
 
 import { v4 as uuidv4 } from "uuid";
+import { CustomerService } from "../services/CustomerService";
 
 export const uploadMeasurement = async (req: Request, res: Response) => {
   const gemini = new GeminiService();
@@ -103,4 +104,33 @@ export const confirmMeasurement = async (req: Request, res: Response) => {
   res.status(200).json({ success: true });
 };
 
-export const listMeasurement = (req: Request, res: Response) => {};
+export const listMeasurement = async (req: Request, res: Response) => {
+  const customer = new CustomerService();
+
+  const { customer_code } = req.params;
+  const measure_type = req.query.measure_type as string;
+
+  if (measure_type && !["WATER", "GAS"].includes(measure_type.toUpperCase())) {
+    res.status(400).json({
+      error_code: "INVALID_TYPE",
+      error_description: "Tipo de medição não permitido",
+    });
+  }
+
+  try {
+    const listMeasurements = await customer.findMeasurementCustomer(
+      customer_code
+    );
+
+    if (listMeasurement.length === 0) {
+      res.status(404).json({
+        error_code: "MEASURES_NOT_FOUND",
+        error_description: "Nenhuma leitura encontrada",
+      });
+    }
+
+    res.status(200).json({ customer_code, measures: listMeasurements });
+  } catch (error) {
+    res.send(error);
+  }
+};
