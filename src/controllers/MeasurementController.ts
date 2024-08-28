@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { GeminiService } from "../services/gemini";
+import { GeminiService } from "../services/GeminiService";
 import { MeasurementService } from "../services/MeasurementService";
 import { v4 as uuidv4 } from "uuid";
 
