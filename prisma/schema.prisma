@@ -8,12 +8,16 @@ datasource db {
 }
 
 model Measurement {
-  id              Int      @id @default(autoincrement())
-  measure_uuid    String   @unique
+  measure_uuid    String   @id @default(uuid())
   measure_value   Int
   measure_datetime DateTime
   measure_type    String
   image_url       String
   confirmed       Int
-  customer_code   String
+  customer Customer[]
+}
+
+model Customer {
+  customer_code String @id @default(uuid())
+  measurement Measurement[]
 }

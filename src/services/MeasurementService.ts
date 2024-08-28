@@ -14,23 +14,32 @@ export class MeasurementService {
         measure_type: data.measure_type,
         image_url: data.image_url,
         confirmed: data.confirmed!,
-        customer_code: data.customer_code,
+        customer: {
+          connectOrCreate: {
+            where: { customer_code: data.customer_code },
+            create: { customer_code: data.customer_code },
+          },
+        },
       },
     });
     return measurement ? (measurement as IMeasurement) : null;
   }
 
   async findMeasurementUpload(
-    customer_code: string,
-    measure_type: string
+    measure_type: string,
+    customer_code: string
   ): Promise<IMeasurement | null> {
     const measurement = await this.prisma.measurement.findFirst({
       where: {
-        customer_code: customer_code,
         measure_type: measure_type,
         measure_datetime: {
           gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
           lt: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1),
+        },
+        customer: {
+          some: {
+            customer_code: customer_code,
+          },
         },
       },
     });

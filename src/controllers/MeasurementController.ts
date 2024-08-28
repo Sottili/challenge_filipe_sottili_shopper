@@ -1,11 +1,15 @@
 import { Request, Response } from "express";
+
 import { GeminiService } from "../services/GeminiService";
 import { MeasurementService } from "../services/MeasurementService";
+import { LLMService } from "../services/LLMService";
+
 import { v4 as uuidv4 } from "uuid";
 
 export const uploadMeasurement = async (req: Request, res: Response) => {
   const gemini = new GeminiService();
   const measurement = new MeasurementService();
+  const llm = new LLMService();
 
   const { image, customer_code, measurement_datetime, measure_type } =
     req.body();
@@ -37,17 +41,22 @@ export const uploadMeasurement = async (req: Request, res: Response) => {
     displayName: "Measurement",
   });
 
-  // Criação dele no Banco
+  // Return value of measurement
+  const valueMeasurement = await llm.extractMeasurementValue(
+    uploadResponse.file.uri
+  );
+
   const data = {
-    customer_code: customer_code as string,
+    image_url: valueMeasurement?.image_url!,
+    measure_value: valueMeasurement?.measure_value!,
+    measure_uuid: `${valueMeasurement?.measure_uuid}`,
     measure_datetime: new Date(measurement_datetime),
     measure_type: measure_type,
-    measure_value: 123123,
-    image_url: `${uploadResponse.file.uri}`,
-    measure_uuid: `${uuidv4()}`,
+    confirmed: 0,
+    customer_code: customer_code,
   };
 
-  await measurement.create(data).then();
+  await measurement.create(data);
 
   res.status(200).json({
     image_url: data.image_url,
