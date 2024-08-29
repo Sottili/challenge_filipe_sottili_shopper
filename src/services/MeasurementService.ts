@@ -1,5 +1,7 @@
+// Import do client do Prisma
 import { PrismaClient } from "@prisma/client";
 
+// Import da interface do Mensurement
 import { IMeasurement } from "../interfaces/IMeasurement";
 
 export class MeasurementService {
@@ -26,8 +28,8 @@ export class MeasurementService {
   }
 
   async findMeasurementUpload(
-    measure_type: string,
-    customer_code: string
+    customer_code: string,
+    measure_type: string
   ): Promise<IMeasurement | null> {
     const measurement = await this.prisma.measurement.findFirst({
       where: {

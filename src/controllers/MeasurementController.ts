@@ -1,19 +1,18 @@
+// Import dos types do Express
 import { Request, Response } from "express";
 
-import { GeminiService } from "../services/GeminiService";
+// Import dos Services do Controller
+import { model, uploadImage } from "../services/GeminiService";
 import { MeasurementService } from "../services/MeasurementService";
-import { LLMService } from "../services/LLMService";
-
-import { v4 as uuidv4 } from "uuid";
 import { CustomerService } from "../services/CustomerService";
 
-export const uploadMeasurement = async (req: Request, res: Response) => {
-  const gemini = new GeminiService();
-  const measurement = new MeasurementService();
-  const llm = new LLMService();
+// Import do uuid para geração
+import { v4 as uuidv4 } from "uuid";
 
-  const { image, customer_code, measurement_datetime, measure_type } =
-    req.body();
+export const uploadMeasurement = async (req: Request, res: Response) => {
+  const measurement = new MeasurementService();
+
+  const { image, customer_code, measurement_datetime, measure_type } = req.body;
 
   // Validação de dados
   if (!image || !customer_code || !measurement_datetime || !measure_type) {
@@ -37,20 +36,24 @@ export const uploadMeasurement = async (req: Request, res: Response) => {
   }
 
   // Upload da Foto no Gemini
-  const uploadResponse = await gemini.upload(`${image}`, {
+  const uploadResponse = await uploadImage.uploadFile(`${image}`, {
     mimeType: "image/jpeg",
-    displayName: "Measurement",
   });
 
-  // Return value of measurement
-  const valueMeasurement = await llm.extractMeasurementValue(
-    uploadResponse.file.uri
-  );
+  const result = await model.generateContent([
+    {
+      fileData: {
+        mimeType: uploadResponse.file.mimeType,
+        fileUri: uploadResponse.file.uri,
+      },
+    },
+    { text: "Read the image and return ONLY the meter value" },
+  ]);
 
   const data = {
-    image_url: valueMeasurement?.image_url!,
-    measure_value: valueMeasurement?.measure_value!,
-    measure_uuid: `${valueMeasurement?.measure_uuid}`,
+    image_url: uploadResponse.file.uri,
+    measure_value: parseInt(result.response.text()),
+    measure_uuid: uuidv4(),
     measure_datetime: new Date(measurement_datetime),
     measure_type: measure_type,
     confirmed: 0,
@@ -89,7 +92,7 @@ export const confirmMeasurement = async (req: Request, res: Response) => {
     });
   }
 
-  if (existsMeasure) {
+  if (existsMeasure.confirmed) {
     return res.status(409).json({
       error_code: "CONFIRMATION_DUPLICATE",
       error_description: "Leitura do mês já realizada",

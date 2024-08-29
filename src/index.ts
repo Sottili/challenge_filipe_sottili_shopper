@@ -1,14 +1,23 @@
+// Import do Express
 import express from "express";
-import dotenv from "dotenv";
-import { db } from "./services/database";
 
+// Rotas da aplicação
+import router from "./router";
+
+// Import e configuração dos arquivos .env
+import dotenv from "dotenv";
 dotenv.config();
 
-const database = new db();
-/*database.initialize();*/
-
 const app = express();
-const port = 81;
+
+// Porta da Aplicação
+const port = 80;
+
+//Json
+app.use(express.json());
+
+// Routes
+app.use("/", router);
 
 app.listen(port, () => {
   console.log(`App running in port ${port}`);
