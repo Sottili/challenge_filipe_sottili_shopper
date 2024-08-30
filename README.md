@@ -30,7 +30,7 @@ Prerequisites to run project:
 How to clone project
 
 ```bash
-git clone https://github.com/Sottili/api_cidade_alta_challenge
+git clone https://github.com/Sottili/challenge_filipe_sottili_shopper/
 ```
 
 <h3>Starting</h3>
