@@ -1,0 +1,30 @@
+version: "4.29.0"
+
+services:
+  postgres:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=challenge_shopper
+    volumes:
+      - /volum/post
+
+  app:
+    image: node:latest
+    build:
+      context: "./"
+      dockerfile: dockerfile
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    volumes:
+      - /volum/app
+    ports:
+      - "80:80"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
