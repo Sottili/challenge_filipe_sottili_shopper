@@ -39,7 +39,7 @@ After clone the project, use below command lines to execute.
 
 ```bash
 cd project-name
-docker compose up
+docker compose up --build
 ```
 
 <h2 id="routes">📍 API Endpoints</h2>
