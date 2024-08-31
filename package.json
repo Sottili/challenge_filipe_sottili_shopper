@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run build && node build/index.js",
-    "start:dev": "npx nodemon",
+    "start:dev": "npx prisma migrate dev --name init && npx prisma migrate deploy && npx nodemon",
     "build": "rimraf ./build && tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

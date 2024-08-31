@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider     = "postgresql"
-  url          = "postgresql://admin:admin@localhost:5432/challenge_shopper"
+  url          = "postgresql://admin:admin@postgres:5432/challenge_shopper"
 }
 
 model Measurement {
