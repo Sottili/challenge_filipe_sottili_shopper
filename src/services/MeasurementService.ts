@@ -69,6 +69,7 @@ export class MeasurementService {
       },
       data: {
         measure_value: confirmed_value,
+        confirmed: 1,
       },
     });
     return measurement ? (measurement as IMeasurement) : null;
